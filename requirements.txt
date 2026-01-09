@@ -1,0 +1,21 @@
+# Core
+python-dotenv
+pypdf
+streamlit
+flask
+
+# LangChain (pin to compatible family)
+langchain>=0.3.0
+langchain-community>=0.3.0
+langchain-openai>=0.2.0
+langchain-experimental>=0.3.0
+
+# Embeddings (local)
+sentence-transformers>=3.0.0
+
+# Vector DB (choose ONE)
+pinecone>=5.0.0
+langchain-pinecone>=0.2.0
+
+
+-e .  # Local package installation
