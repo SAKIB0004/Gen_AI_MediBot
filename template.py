@@ -7,8 +7,20 @@ logging.basicConfig(level=logging.INFO, format='[%(asctime)s :  - %(levelname)s 
 
 list_of_files = [
     "src/__init__.py",
-    "src/helper.py",
-    "src/prompt.py",
+    "src/config.py",
+    "src/pdf_loader.py",
+    "src/chunking.py",
+    "src/embeddings.py",
+    "src/pinecone_setup.py",
+    "src/pinecone_upsert.py",
+    "src/retriever.py",
+    "src/rag_groq.py",
+    
+    
+    "data/medical_books/",
+    "assets/styles.css",
+
+    "ingest.py",
     ".env",
     "setup.py",
     "app.py",
