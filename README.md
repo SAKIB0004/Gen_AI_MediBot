@@ -49,13 +49,12 @@ GEN_AI_MediBot/
 │
 ├── app.py                  # Streamlit application (UI + RAG logic)
 ├── ingest.py               # End-to-end ingestion runner
-├── .env                    # API keys & configuration
 ├── requirements.txt
 ├── README.md
 │
 ├── Data/
 │   └── medical_books/
-│       └── Medical_Book.pdf
+│       └── Medical_Book.pdf   # (local file – not committed to GitHub)
 │
 ├── src/
 │   ├── config.py           # Env loading & constants
@@ -68,7 +67,7 @@ GEN_AI_MediBot/
 │   └── rag_groq.py         # RAG chain with Groq
 │
 └── assets/
-    └── styles.css          # (optional) extra styling
+    └── styles.css          # UI styling
 ```
 
 ---
@@ -85,10 +84,10 @@ GEN_AI_MediBot/
    Embeddings + full text are stored in **Pinecone (namespace: medical)**.
 
 4. **Query Time Flow**  
-   - User asks a question
-   - Relevant chunks retrieved from Pinecone
-   - Similarity threshold check applied
-   - Groq LLM generates answer *only from retrieved context*
+   - User asks a question  
+   - Relevant chunks retrieved from Pinecone  
+   - Similarity threshold check applied  
+   - Groq LLM generates an answer *only from retrieved context*
 
 ---
 
@@ -97,8 +96,8 @@ GEN_AI_MediBot/
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/GEN_AI_MediBot.git
-cd GEN_AI_MediBot
+git clone https://github.com/SAKIB0004/Gen_AI_MediBot.git
+cd Gen_AI_MediBot
 ```
 
 ### 2️⃣ Create & Activate Environment
@@ -111,7 +110,7 @@ pip install -r requirements.txt
 
 ### 3️⃣ Configure Environment Variables
 
-Create a `.env` file in the project root:
+Create a `.env` file in the project root (this file is **not committed**):
 
 ```
 PINECONE_API_KEY=your_pinecone_key
@@ -120,7 +119,17 @@ PINECONE_NAMESPACE=medical
 GROQ_API_KEY=your_groq_key
 ```
 
-### 4️⃣ Ingest the Medical Book
+### 4️⃣ Add Medical Book PDF (Required)
+
+Place your medical textbook PDF at:
+
+```
+Data/medical_books/Medical_Book.pdf
+```
+
+> The PDF is intentionally **excluded from the GitHub repository** to keep the repo lightweight and avoid copyright issues.
+
+### 5️⃣ Ingest the Medical Book
 
 ```bash
 python ingest.py
@@ -128,7 +137,7 @@ python ingest.py
 
 > This step loads the PDF, chunks it, generates embeddings, and upserts vectors into Pinecone.
 
-### 5️⃣ Run the Application
+### 6️⃣ Run the Application
 
 ```bash
 streamlit run app.py
@@ -143,7 +152,7 @@ streamlit run app.py
 - ✅ Similarity-score gating
 - ✅ Explicit medical disclaimer
 
-This makes MediBot suitable for **educational and informational use**, not diagnosis or treatment.
+This makes MediBot suitable for **educational and informational use only**, not diagnosis or treatment.
 
 ---
 
@@ -161,7 +170,7 @@ This makes MediBot suitable for **educational and informational use**, not diagn
 - Token-level streaming from Groq
 - Confidence score visualization
 - Multiple books / multi-namespace support
-- Feedback (👍 / 👎) loop
+- Feedback loop (👍 / 👎)
 - Deployment on Hugging Face Spaces or AWS
 
 ---
