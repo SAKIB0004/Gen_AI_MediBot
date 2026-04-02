@@ -30,7 +30,7 @@ def build_groq_rag_chain(retriever):
             for d in docs
         )
 
-    # ✅ FIX: use retriever.invoke(query)
+    # use retriever.invoke(query)
     retrieve_docs = RunnableLambda(lambda q: retriever.invoke(q))
 
     build_inputs = RunnableLambda(lambda x: {

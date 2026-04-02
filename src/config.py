@@ -12,7 +12,7 @@ PINECONE_NAMESPACE = os.getenv("PINECONE_NAMESPACE", "medical")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 
-PDF_DIR = os.getenv("PDF_DIR", "data/medical_books")
+PDF_DIR = os.getenv("PDF_DIR", "Data")
 
 def validate_env():
     missing = []
