@@ -227,7 +227,7 @@ If you're reviewing this as a recruiter or mentor: this project demonstrates **e
 
 	
 ## 3. Create ECR repo to store/save docker image
-    - Save the URI: 970547337635.dkr.ecr.ap-south-1.amazonaws.com/medicalchatbot
+    - Save the URI: 192431908450.dkr.ecr.ap-south-1.amazonaws.com/medicalchatbot
 
 	
 ## 4. Create EC2 machine (Ubuntu) 
