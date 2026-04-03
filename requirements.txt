@@ -2,12 +2,11 @@
 python-dotenv
 pypdf
 streamlit
-flask
 
 # LangChain (pin to compatible family)
 langchain>=0.3.0
 langchain-community>=0.3.0
-langchain-openai>=0.2.0
+
 langchain-groq>=0.2.0
 langchain-experimental>=0.3.0
 langchain-core
