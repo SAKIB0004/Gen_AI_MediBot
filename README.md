@@ -1,267 +1,401 @@
-# 🩺 MediBot – Medical Book Question Answering System
+# MediBot
 
-MediBot is a **Retrieval-Augmented Generation (RAG)** based medical book question answering application. It allows users to ask natural language questions and receive **source-grounded answers strictly from a medical textbook**, minimizing hallucinations and improving reliability.
+> **A source-grounded medical book question-answering system built with RAG, Pinecone, Groq, and Streamlit.**
 
-This project demonstrates an **end-to-end GenAI pipeline** using **LangChain, Pinecone, Groq LLMs, and Streamlit**, with a production-style UI and strong safety controls.
+## Overview
 
----
+MediBot is a Retrieval-Augmented Generation (RAG) application that answers natural-language questions using content retrieved from a medical textbook. Instead of generating free-form medical claims, the system grounds responses in retrieved book chunks and applies safety-oriented guardrails to reduce hallucinations.
 
-## ✨ Key Features
+This project is designed as a portfolio-ready applied GenAI system that demonstrates document ingestion, vector indexing, retrieval, LLM-based answer generation, chat-style UX, and deployment readiness.
 
-- 📚 **Medical Book–Only Answers**  
-  Answers are generated *only* from retrieved medical book chunks.
+## Why This Project Matters
 
-- 🔎 **RAG Pipeline (Retrieval-Augmented Generation)**  
-  Combines semantic search (Pinecone) with LLM reasoning (Groq).
+Large language models can sound convincing even when they are wrong. In medical and educational domains, that risk is especially important. MediBot addresses this by combining:
 
-- 🧠 **Low Hallucination Guard**  
-  Similarity-score gating ensures the bot says *"I don't know"* when context is weak.
+- **document-grounded retrieval** from a trusted source,
+- **LLM reasoning** only over retrieved context,
+- **score-based fallback behavior** when context is weak,
+- **clear safety disclaimers** for informational use.
 
-- 💬 **ChatGPT-like Experience**  
-  - Typing indicator ("Thinking…")  
-  - Progressive answer streaming (character-by-character)
+The result is a practical example of how to build a safer, more reliable question-answering system for knowledge-intensive domains.
 
-- 🩺 **Medical Safety Disclaimer**  
-  Clear separation between informational content and medical advice.
+## Key Features
 
-- 🎨 **Modern, Creative UI**  
-  Custom CSS, H2 header, badges, source expanders, and clean chat layout.
+- **Medical book-only answering** using retrieved textbook chunks
+- **RAG pipeline** powered by Pinecone + LangChain + Groq
+- **Low-hallucination guardrails** with similarity threshold checks
+- **Conversation-aware UX** with chat history support
+- **Modern Streamlit interface** with custom styling and source display
+- **Source expanders** for transparent answer traceability
+- **Namespace-safe retrieval** for predictable vector search behavior
+- **PDF ingestion pipeline** for chunking, embedding, and upserting content
+- **Dockerized deployment support**
+- **AWS EC2 + ECR + GitHub Actions CI/CD compatibility**
 
----
+## Tech Stack
 
-## 🧱 Tech Stack
+### Core Technologies
 
-| Layer | Technology |
-|-----|-----------|
-| Frontend | Streamlit |
-| LLM | Groq (via LangChain) |
-| Embeddings | HuggingFace / OpenAI (configurable) |
-| Vector DB | Pinecone |
-| Framework | LangChain |
-| Language | Python |
+- **Language:** Python
+- **Frontend/UI:** Streamlit
+- **Framework:** LangChain
+- **Vector Database:** Pinecone
+- **LLM Provider:** Groq
+- **Embeddings:** Configurable embedding backend
+- **Containerization:** Docker
+- **Cloud / Deployment:** AWS EC2, Amazon ECR, GitHub Actions
 
----
+### Supporting Components
 
-## 📂 Project Structure
+- PDF loading and preprocessing
+- Semantic chunking pipeline
+- Vector upsert utilities
+- Environment-based configuration management
+- Streamlit chat state and memory-aware retrieval flow
 
+## Architecture / Workflow
+
+```text
+Medical PDF
+   │
+   ▼
+PDF Loader
+   │
+   ▼
+Chunking Pipeline
+   │
+   ▼
+Embedding Generation
+   │
+   ▼
+Pinecone Vector Index
+   │
+   ▼
+Retriever
+   │
+   ▼
+Groq-powered RAG Chain
+   │
+   ▼
+Streamlit Chat Interface
 ```
-GEN_AI_MediBot/
-│
-├── app.py                  # Streamlit application (UI + RAG logic)
-├── ingest.py               # End-to-end ingestion runner
-├── requirements.txt
-├── README.md
-│
-├── Data/
-│   └── medical_books/
-│       └── Medical_Book.pdf   # (local file – not committed to GitHub)
-│
+
+### Inference Flow
+
+1. A user asks a question in the Streamlit interface.
+2. The app retrieves the most relevant chunks from Pinecone.
+3. A similarity threshold check is applied.
+4. If retrieved evidence is weak, the system returns an explicit fallback such as *"I don't know based on the provided book."*
+5. If relevant evidence exists, the Groq-backed RAG chain generates a response grounded in retrieved context.
+6. The answer is displayed with optional source references.
+
+## System Design Notes
+
+This project is structured as a modular RAG system with clear separation of concerns:
+
+- **`app.py`** handles the Streamlit UI, chat interaction, and response rendering.
+- **`ingest.py`** runs the ingestion pipeline for PDF-to-vector conversion.
+- **`src/`** contains reusable modules for configuration, loading, chunking, embeddings, vector storage, retrieval, and RAG generation.
+- **`.streamlit/`** provides Streamlit runtime configuration.
+- **`.github/workflows/`** supports CI/CD automation.
+
+## Dataset
+
+This project uses a **medical textbook PDF** as its knowledge source.
+
+- The source file is expected locally at:
+
+```text
+Data/medical_books/Medical_Book.pdf
+```
+- You can replace the PDF with another textbook or domain-specific reference file if needed.
+
+## Model Details
+
+This project does not train a custom deep learning model. Instead, it uses an applied GenAI pipeline composed of:
+
+- **Retriever:** Pinecone vector search
+- **Embedder:** Configurable embedding backend
+- **Generator:** Groq LLM via LangChain
+- **Response policy:** retrieval-first, source-grounded answer generation
+
+### Training Process
+
+Not applicable in the classical ML sense.
+
+Instead of model training, the project performs:
+
+- document loading,
+- chunking,
+- embedding generation,
+- vector indexing,
+- retrieval-time answer generation.
+
+## Evaluation and Reliability Approach
+
+This project focuses on practical reliability rather than benchmark training metrics.
+
+### Current Reliability Measures
+
+- Retrieved-context-only answering
+- Explicit fallback on weak retrieval
+- Source display for transparency
+- Safety disclaimer for educational use only
+- Namespace-safe vector retrieval
+
+
+## Project Structure
+
+```text
+Gen_AI_MediBot/
+├── .github/
+│   └── workflows/              # CI/CD workflows
+├── .streamlit/                 # Streamlit configuration
+├── Data/                       # Local medical PDF input
+│           
+├── assets/                     # UI assets / styling resources
+├── research/                   # Research notebooks / experiments / drafts
 ├── src/
-│   ├── config.py           # Env loading & constants
-│   ├── pdf_loader.py       # PDF reading
-│   ├── chunking.py         # Text chunking logic
-│   ├── embeddings.py       # Embedding model
-│   ├── pinecone_setup.py   # Pinecone index creation
-│   ├── pinecone_upsert.py  # Vector upsert logic
-│   ├── retriever.py        # Namespace-safe retriever
-│   └── rag_groq.py         # RAG chain with Groq
-│
-└── assets/
-    └── styles.css          # UI styling
+│   ├── chunking.py             # Text chunking logic
+│   ├── config.py               # Environment loading and constants
+│   ├── embeddings.py           # Embedding model setup
+│   ├── pdf_loader.py           # PDF reading utilities
+│   ├── pinecone_setup.py       # Pinecone index setup
+│   ├── pinecone_upsert.py      # Vector upsert pipeline
+│   ├── rag_groq.py             # Groq-based RAG chain
+│   └── retriever.py            # Retriever utilities
+├── .dockerignore
+├── .env.example
+├── .gitignore
+├── Dockerfile
+├── LICENSE
+├── README.md
+├── app.py                      # Streamlit application entrypoint
+├── ingest.py                   # Ingestion runner
+├── requirements.txt
+├── setup.py
+└── template.py
 ```
 
----
+## Installation
 
-## 🔄 RAG Architecture (High Level)
-
-1. **PDF Ingestion**  
-   Medical book is loaded and split into semantically meaningful chunks.
-
-2. **Embedding Generation**  
-   Each chunk is converted into vector embeddings.
-
-3. **Vector Storage**  
-   Embeddings + full text are stored in **Pinecone (namespace: medical)**.
-
-4. **Query Time Flow**  
-   - User asks a question  
-   - Relevant chunks retrieved from Pinecone  
-   - Similarity threshold check applied  
-   - Groq LLM generates an answer *only from retrieved context*
-
----
-
-## 🚀 How to Run the Project
-
-### 1️⃣ Clone the Repository
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/SAKIB0004/Gen_AI_MediBot.git
 cd Gen_AI_MediBot
 ```
 
-### 2️⃣ Create & Activate Environment
+### 2. Create a Virtual Environment
+
+#### Using `venv`
 
 ```bash
-conda create -n medibot python=3.10 -y
-conda activate medibot
+python -m venv .venv
+source .venv/bin/activate
+```
+
+#### On Windows (PowerShell)
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+### 3. Install Dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
-### 3️⃣ Configure Environment Variables
+## Environment Variables
 
-Create a `.env` file in the project root (this file is **not committed**):
+Create a `.env` file in the project root based on `.env.example`.
 
-```
-PINECONE_API_KEY=your_pinecone_key
-PINECONE_INDEX_NAME=medibot-medical
+```env
+PINECONE_API_KEY=your_pinecone_api_key
+PINECONE_INDEX_NAME=your_index_name
 PINECONE_NAMESPACE=medical
-GROQ_API_KEY=your_groq_key
+GROQ_API_KEY=your_groq_api_key
 ```
 
-### 4️⃣ Add Medical Book PDF (Required)
+> Add any additional configuration variables required by your current embedding setup.
 
-Place your medical textbook PDF at:
+## Setup Instructions
 
-```
+### 1. Add the PDF Knowledge Source
+
+Place your medical textbook PDF here:
+
+```text
 Data/medical_books/Medical_Book.pdf
 ```
 
-> The PDF is intentionally **excluded from the GitHub repository** to keep the repo lightweight and avoid copyright issues.
-
-### 5️⃣ Ingest the Medical Book
+### 2. Ingest the PDF into Pinecone
 
 ```bash
 python ingest.py
 ```
 
-> This step loads the PDF, chunks it, generates embeddings, and upserts vectors into Pinecone.
+This step:
 
-### 6️⃣ Run the Application
+- loads the PDF,
+- splits it into chunks,
+- generates embeddings,
+- pushes chunk vectors into Pinecone.
+
+## Run Instructions
+
+### Local Streamlit Run
 
 ```bash
 streamlit run app.py
 ```
 
----
+### Recommended Streamlit Network Binding
 
-## 🛡️ Safety & Reliability
+```bash
+streamlit run app.py --server.address 0.0.0.0 --server.port 8501
+```
 
-- ✅ Answers strictly limited to retrieved book context
-- ✅ Namespace-safe retrieval (no silent empty searches)
-- ✅ Similarity-score gating
-- ✅ Explicit medical disclaimer
+Then open:
 
-This makes MediBot suitable for **educational and informational use only**, not diagnosis or treatment.
+```text
+http://localhost:8501
+```
 
----
+## Docker Usage
 
-## 📌 Example Use Cases
+### Build the Image
 
-- Medical students revising concepts
-- Educational demonstrations of RAG systems
-- GenAI portfolio project
-- Interview-ready applied AI system
+```bash
+docker build -t medibot .
+```
 
----
+### Run the Container
 
-## 🧪 Future Enhancements
+```bash
+docker run -d \
+  --name medibot \
+  -e PINECONE_API_KEY="your_pinecone_api_key" \
+  -e GROQ_API_KEY="your_groq_api_key" \
+  -e PINECONE_INDEX_NAME="your_index_name" \
+  -e PINECONE_NAMESPACE="medical" \
+  -p 8501:8501 \
+  medibot
+```
 
-- Token-level streaming from Groq
-- Confidence score visualization
-- Multiple books / multi-namespace support
-- Feedback loop (👍 / 👎)
-- Deployment on Hugging Face Spaces or AWS
+Open the application at:
 
----
+```text
+http://localhost:8501
+```
 
-## 👨‍💻 Author
+## Deployment
 
-Built as part of a **Generative AI learning journey with LangChain & RAG systems**.
+This project is designed to support containerized deployment on AWS using a lightweight CI/CD workflow.
 
-If you're reviewing this as a recruiter or mentor: this project demonstrates **end-to-end GenAI system design**, not just prompt usage.
+### Deployment Stack
 
----
+- **Amazon ECR** for container image storage
+- **AWS EC2** for application hosting
+- **GitHub Actions** for build and deployment automation
+- **Docker** for packaging and runtime consistency
 
-⭐ *If you found this project useful, consider starring the repository!*
+### Deployment Workflow
 
-### Techstack Used:
+1. Code is pushed to the `main` branch.
+2. GitHub Actions builds the latest Docker image.
+3. The image is pushed to **Amazon ECR**.
+4. A **self-hosted GitHub Actions runner** on the EC2 instance pulls the latest image.
+5. Docker stops the old container, starts the new one, and serves the Streamlit app on port `8501`.
+6. Runtime secrets are injected securely from GitHub Actions into the container environment.
 
-- Python
-- LangChain
-- Flask
-- GPT
-- Pinecone
+### Runtime Access
 
+After successful deployment, the application can be accessed through the EC2 instance public IP or a custom domain.
 
-# AWS-CICD-Deployment-with-Github-Actions
+```text
+http://<EC2_PUBLIC_IP>:8501
+```
 
-## 1. Login to AWS console.
-
-## 2. Create IAM user for deployment
-
-	#with specific access
-
-	1. EC2 access : It is virtual machine
-
-	2. ECR: Elastic Container registry to save your docker image in aws
-
-
-	#Description: About the deployment
-
-	1. Build docker image of the source code
-
-	2. Push your docker image to ECR
-
-	3. Launch Your EC2 
-
-	4. Pull Your image from ECR in EC2
-
-	5. Lauch your docker image in EC2
-
-	#Policy:
-
-	1. AmazonEC2ContainerRegistryFullAccess
-
-	2. AmazonEC2FullAccess
-
-	
-## 3. Create ECR repo to store/save docker image
-    - Save the URI: 192431908450.dkr.ecr.ap-south-1.amazonaws.com/medicalchatbot
-
-	
-## 4. Create EC2 machine (Ubuntu) 
-
-## 5. Open EC2 and Install docker in EC2 Machine:
-	
-	
-	#optinal
-
-	sudo apt-get update -y
-
-	sudo apt-get upgrade
-	
-	#required
-
-	curl -fsSL https://get.docker.com -o get-docker.sh
-
-	sudo sh get-docker.sh
-
-	sudo usermod -aG docker ubuntu
-
-	newgrp docker
-	
-# 6. Configure EC2 as self-hosted runner:
-    setting>actions>runner>new self hosted runner> choose os> then run command one by one
+> For a stable public endpoint, use an **Elastic IP** or connect a domain name through a reverse proxy such as Nginx.
 
 
-# 7. Setup github secrets:
+## Secrets Management
 
-   - AWS_ACCESS_KEY_ID
-   - AWS_SECRET_ACCESS_KEY
-   - AWS_DEFAULT_REGION
-   - ECR_REPO
-   - PINECONE_API_KEY
-   - OPENAI_API_KEY
+This project requires API credentials and deployment secrets, but **real secret values should never be committed to the repository**.
 
-    
+### Recommended Secret Handling
+
+Use **GitHub Actions Secrets** for CI/CD and environment variable injection.
+
+Typical secrets for this project include:
+
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
+- `AWS_DEFAULT_REGION`
+- `ECR_REPO`
+- `PINECONE_API_KEY`
+- `GROQ_API_KEY`
+
+These secrets should be stored in:
+
+- **GitHub Repository Secrets**, or
+- **GitHub Environment Secrets** for deployment-specific environments
+
+
+## Example Questions
+
+You can test the application with prompts like:
+
+- `What is hypertension?`
+- `What are the symptoms of diabetes?`
+- `Explain anemia in simple words.`
+- `What is the value of RBC count and is it in range?` *(if the uploaded source contains lab-related content)*
+
+## Example Output / Results
+
+**Example answer style:**
+
+- grounded in retrieved context,
+- concise and readable,
+- accompanied by sources when available,
+- falls back safely if relevant evidence is missing.
+
+```text
+Question:
+What is hypertension?
+
+Answer:
+Hypertension refers to persistently elevated blood pressure. Based on the provided source,
+it is associated with increased cardiovascular risk and may require lifestyle modification
+or medical management depending on severity.
+```
+
+> Replace this section with actual screenshots or real sample outputs from your running app.
+
+
+### Demo Links
+
+- **Live Demo:** `http://13.206.80.6:8501`
+
+## Safety and Limitations
+
+- This application is intended for **educational and informational use only**.
+- It is **not a medical diagnosis or treatment system**.
+- Response quality depends on:
+  - the quality of the source PDF,
+  - the chunking strategy,
+  - the embedding model,
+  - retriever relevance.
+- If the answer is not present in the uploaded book, the system should prefer a safe fallback.
+
+
+## License
+
+This project is licensed under the **MIT License**.
+
+See the [`LICENSE`](LICENSE) file for details.
+
+
